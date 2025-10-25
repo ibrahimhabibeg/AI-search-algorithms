@@ -36,6 +36,12 @@ class NQueensState(SearchProblemState):
                     row.append(".")
             rows.append(" ".join(row))
         return "\n".join(rows)
+    
+    def __eq__(self, value):
+        return isinstance(value, NQueensState) and self.board == value.board
+
+    def __hash__(self):
+        return hash(tuple(self.board))
 
 
 class NQueensProblem(SearchProblem):
@@ -77,6 +83,19 @@ class NoQueenAttackHeuristic(HeuristicFunction):
                 if board[col1] == board[col2] or abs(board[col1] - board[col2]) == abs(
                     col1 - col2
                 ):
+                    attacks += 1
+
+        return float(attacks)
+    
+class NoQueenRowAttackHeuristic(HeuristicFunction):
+    def estimate(self, state: NQueensState) -> float:
+        board = state.board
+        n = state.n
+        attacks = 0
+
+        for col1 in range(n):
+            for col2 in range(col1 + 1, n):
+                if board[col1] == board[col2]:
                     attacks += 1
 
         return float(attacks)
